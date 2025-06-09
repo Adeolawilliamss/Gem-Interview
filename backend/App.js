@@ -77,7 +77,7 @@ const clientBuildPath = path.join(__dirname, '..', 'frontend', 'build');
 app.use(express.static(clientBuildPath));
 
 // 9) Catch-all for client-side routing — skip /api
-app.get('*', (req, res, next) => {
+app.get('/*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   res.sendFile(path.join(clientBuildPath, 'index.html'));
 });
