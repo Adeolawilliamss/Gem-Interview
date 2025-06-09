@@ -37,10 +37,7 @@ export default function Navbar() {
           setIsAuthenticated(false);
         }
       } catch (error) {
-        console.error(
-          "⚠️ Auth fetch failed:",
-          error.response?.data || error.message
-        );
+        console.error("⚠️ Auth fetch failed:", error.response?.data || error.message);
         setIsAuthenticated(false);
       }
     };
@@ -88,12 +85,20 @@ export default function Navbar() {
           </Link>
 
           {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className="text-red-500 font-semibold hover:text-red-600"
-            >
-              Logout
-            </button>
+            <>
+              <button
+                onClick={() => navigate("/signup")}
+                className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 transition"
+              >
+                Signup
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-red-500 font-semibold hover:text-red-600"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link to="/" className="text-gray-700 hover:text-blue-600">
@@ -167,33 +172,56 @@ export default function Navbar() {
               </svg>
             </button>
 
-            {[
-              "Explore Roles",
-              "Explore Categories",
-              "Earn a professional Certificate",
-              "Earn an Online Degree",
-              "Contact",
-              isAuthenticated ? "Logout" : "Login",
-            ].map((section) =>
-              section === "Logout" ? (
+            <motion.a href="#" variants={itemVariants}>
+              Explore Roles
+            </motion.a>
+            <motion.a href="#" variants={itemVariants}>
+              Explore Categories
+            </motion.a>
+            <motion.a href="#" variants={itemVariants}>
+              Earn a Professional Certificate
+            </motion.a>
+            <motion.a href="#" variants={itemVariants}>
+              Earn an Online Degree
+            </motion.a>
+            <motion.a href="#" variants={itemVariants}>
+              Contact
+            </motion.a>
+
+            {isAuthenticated ? (
+              <>
                 <motion.button
-                  key={section}
+                  onClick={() => navigate("/signup")}
+                  variants={itemVariants}
+                  className="text-white underline"
+                >
+                  Signup
+                </motion.button>
+                <motion.button
                   onClick={handleLogout}
                   variants={itemVariants}
-                  className="text-white"
+                  className="text-white underline"
                 >
-                  {section}
+                  Logout
                 </motion.button>
-              ) : (
-                <motion.a
-                  key={section}
-                  href={`#${section}`}
+              </>
+            ) : (
+              <>
+                <motion.button
+                  onClick={() => navigate("/")}
                   variants={itemVariants}
-                  className="text-white"
+                  className="text-white underline"
                 >
-                  {section}
-                </motion.a>
-              )
+                  Login
+                </motion.button>
+                <motion.button
+                  onClick={() => navigate("/signup")}
+                  variants={itemVariants}
+                  className="text-white underline"
+                >
+                  Signup
+                </motion.button>
+              </>
             )}
           </motion.div>
         )}
