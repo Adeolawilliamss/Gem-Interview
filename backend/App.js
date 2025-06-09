@@ -88,7 +88,7 @@ app.use((req, res, next) => {
 });
 
 // ✅ Routes
-app.use('/users', userRouter);
+app.use('/api/users', userRouter);
 
 // ✅ Health check
 app.get('/', (req, res) => {
