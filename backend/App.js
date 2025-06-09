@@ -9,6 +9,7 @@ const compression = require('compression');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 
+
 const app = express();
 app.enable('trust proxy');
 
