@@ -15,7 +15,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", formData);
+      const res = await axios.post("https://gem-interview.onrender.com/api/users/login", formData);
       if (res.data.status === 'success') {
         // Save access token to localStorage
         localStorage.setItem('accessToken', res.data.accessToken);

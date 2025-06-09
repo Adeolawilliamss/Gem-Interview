@@ -24,7 +24,7 @@ export default function Signup() {
     e.preventDefault();
     try {
       // Replace with your backend signup endpoint
-      const res = await axios.post("http://localhost:5000/api/users/signup", formData);
+      const res = await axios.post("https://gem-interview.onrender.com/api/users/signup", formData);
 
        if (res.data.status === 'success') {
         // Save access token to localStorage

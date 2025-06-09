@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import Navbar from './navbar';
 import Footer from './footer';
-import Home from './home';
 
 
 const Layout = ({ children }) => {
