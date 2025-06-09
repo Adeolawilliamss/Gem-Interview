@@ -17,15 +17,23 @@ app.enable('trust proxy');
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5000',
-  'https://gem-interview.onrender.com'
+  'https://gem-interview.onrender.com',
 ];
 
 // Global CORS middleware
-app.use(cors({
-  origin: true, // allow same-origin
-  credentials: true
-}));
-
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS not allowed from this origin'));
+      }
+    },
+    credentials: true,
+    exposedHeaders: ['Content-Type'],
+  })
+);
 
 
 // Also allow general static access (e.g. if you have other files in public)
@@ -69,10 +77,6 @@ app.use((req, res, next) => {
 
 // ✅ Routes
 app.use('/api/users', userRouter);
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // ✅ Health check
 app.get('/api', (req, res) => {
