@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -9,43 +10,53 @@ const compression = require('compression');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRoutes');
 
-
 const app = express();
 app.enable('trust proxy');
 
-// Middleware
+// Security HTTP headers
 app.use(helmet());
+
+// Logging
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
+// Rate limiting
 const limiter = rateLimit({
   max: 2000,
-  windowMs: 60 * 60 * 1000, // 1 hour
+  windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, try again in an hour!',
-  proxy: true,
 });
 app.use('/api', limiter);
 
+// Body parsing
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 app.use(compression());
 
-// Serve static files for user uploads if needed
+// Public folder for static assets (uploads, images, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API routes
+// API Routes
 app.use('/api/users', userRouter);
 
-// Optional: Serve React production build files if you want backend to serve frontend in production
+// === Serve React build only if it exists ===
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  const buildPath = path.join(__dirname, '../frontend/build');
+  const indexPath = path.join(buildPath, 'index.html');
 
-  // Serve React's index.html for any unknown routes (frontend routing)
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
-  });
+  // Check if build exists to avoid crashing
+  if (fs.existsSync(indexPath)) {
+    app.use(express.static(buildPath));
+
+    // Handle non-API frontend routes
+    app.get('*', (req, res) => {
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.warn('⚠️ React build not found. Skipping static serving.');
+  }
 }
 
 // Global error handler
